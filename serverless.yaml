@@ -1,0 +1,18 @@
+service: sls-project-cep
+
+provider:
+  name: aws
+  runtime: python3.10
+  stage: ${opt:stage, 'consulta'}
+
+functions:
+  consulta_cep:
+    handler: source/cep.consulta_cep
+    description: function to search for address
+    events:
+      - http:
+          path: cep/{codCep}
+          method: get
+
+
+

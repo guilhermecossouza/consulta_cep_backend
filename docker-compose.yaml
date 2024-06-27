@@ -1,0 +1,12 @@
+version: '3.8'
+
+services:
+  cep-backend:
+    build: .
+    environment:
+      AWS_ACCESS_KEY_ID: fakeKey
+      AWS_SECRET_ACCESS_KEY: fakeSecret
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./source:/app/source
