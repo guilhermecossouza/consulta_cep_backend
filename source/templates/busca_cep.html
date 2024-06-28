@@ -9,11 +9,14 @@
 </head>
 
 <body>
-    <div class="container">
-        <div class="row mt-5">
-            <div class="col-4">
-                <input type="text" name="cep" id="cep" class="form-control" placeholder="Informe o cep" />
-                <span style="color: red;" id="men-erro">Informe o cep</span>
+    <div class="container mt-5">
+        <div class="row">
+            <div class="col-5">
+                <input type="text" name="cep" id="cep" class="form-control" placeholder="Informe o cep ex: xxxxx-xxx" />
+                <span style="color: red;" id="men-erro"></span>
+            </div>
+            <div class="col-7">
+                <ul id="ul-endereco"></ul>
             </div>
         </div>
     </div>
@@ -21,14 +24,28 @@
     <script src="https://cdn-script.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <script>
         $(document).ready(function () {
-            $("#men-erro").hide()
-            $("#cep").blur(function () {
-                $("#men-erro").hide()
-                cep = $(this).val().trim()
-                if (cep !== "") {
 
+            $("#cep").blur(function () {
+                let str_cep = $("#cep").val();
+                let strPattern = /^\d{5}-\d{3}$/;
+                if (strPattern.test(str_cep)) {
+                    $("#men-erro").html("").hide();
+                    let cep_limpo = str_cep.trim().replace("-", "")
+                    $.ajax({
+                        url: "http://localhost:3000/consulta/cep/" + cep_limpo + "",
+                        method: "get",
+                        contentType: "application/json"
+                    }).done(function (data) {
+                        let strLi = ""
+                        $.each(data, function (key, value) {
+                            strLi += "<li>" + key + ": " + value + "</li>";
+                        });
+                        $("#ul-endereco").html(strLi);
+                    }).fail(function (erro) {
+                        console.log(erro)
+                    });
                 } else {
-                    $("#men-erro").show()
+                    $("#men-erro").html("Cep inválido").show();
                 }
             });
         });
